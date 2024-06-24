@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "88340636882",
+    "project_id": "custom-roadmap-5af1f",
+    "storage_bucket": "custom-roadmap-5af1f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88340636882:android:792270e49c9c8f1275390b",
+        "android_client_info": {
+          "package_name": "com.example.c"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClaEvQtiXgANmEUjuhcAfoZqYu0e_somw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88340636882:android:7e34cc45d7766ebc75390b",
+        "android_client_info": {
+          "package_name": "com.example.custom_"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClaEvQtiXgANmEUjuhcAfoZqYu0e_somw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
