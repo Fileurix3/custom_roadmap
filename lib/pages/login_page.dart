@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -74,16 +75,29 @@ class _LoginPageState extends State<LoginPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "field must not ne empty";
-                      } else if (passwordController.text != value) {
-                        return "passwords don't match";
+                      } else if (value.length < 6) {
+                        return "password must not be less that 6";
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          print(e);
+                          setState(() {
+                            error = e.message;
+                          });
+                        }
+                      }
                     },
                     child: const Text("Login"),
                   ),

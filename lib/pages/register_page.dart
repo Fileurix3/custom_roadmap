@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -42,6 +43,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: "email",
                       prefixIcon: Icon(Icons.email),
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        error = null;
+                      });
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "field must not ne empty";
@@ -73,6 +79,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "field must not ne empty";
+                      } else if (value.length < 6) {
+                        return "password must not be less that 6";
                       }
                       return null;
                     },
@@ -103,6 +111,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "field must not ne empty";
+                      } else if (value.length < 6) {
+                        return "password must not be less that 6";
                       } else if (passwordController.text != value) {
                         return "passwords don't match";
                       }
@@ -111,8 +121,21 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          print(e);
+                          setState(() {
+                            error = e.message;
+                          });
+                        }
+                      }
                     },
                     child: const Text("Register"),
                   ),
