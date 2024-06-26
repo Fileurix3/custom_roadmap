@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'custom-roadmap-5af1f.appspot.com',
     measurementId: 'G-YH97YVVLBK',
   );
-
 }
