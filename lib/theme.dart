@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-TextTheme textTheme(Color? mainColor) => TextTheme(
-      headlineLarge: TextStyle(fontSize: 40, color: mainColor),
-      titleSmall: const TextStyle(fontSize: 20, color: Colors.blue),
-      labelLarge: TextStyle(fontSize: 18, color: mainColor),
-    );
+const TextTheme textTheme = TextTheme(
+  headlineLarge: TextStyle(
+    fontSize: 40,
+  ),
+  titleSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+);
 
 ButtonStyle elevationButtonStyle = ButtonStyle(
   textStyle: WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 20)),
@@ -56,7 +57,7 @@ ThemeData lightTheme = ThemeData(
   ),
   inputDecorationTheme: inputDecoration(Colors.black, Colors.red),
   elevatedButtonTheme: ElevatedButtonThemeData(style: elevationButtonStyle),
-  textTheme: textTheme(Colors.grey[900]),
+  textTheme: textTheme,
 );
 
 ThemeData darkTheme = ThemeData(
@@ -69,6 +70,5 @@ ThemeData darkTheme = ThemeData(
   ),
   inputDecorationTheme: inputDecoration(Colors.grey[350], Colors.red),
   elevatedButtonTheme: ElevatedButtonThemeData(style: elevationButtonStyle),
-  dividerTheme: DividerThemeData(color: Colors.grey[600]),
-  textTheme: textTheme(Colors.grey[200]),
+  textTheme: textTheme,
 );

@@ -1,40 +1,21 @@
 {
   "project_info": {
-    "project_number": "88340636882",
-    "project_id": "custom-roadmap-5af1f",
-    "storage_bucket": "custom-roadmap-5af1f.appspot.com"
+    "project_number": "679667436301",
+    "project_id": "custom-roadmap-b7eb4",
+    "storage_bucket": "custom-roadmap-b7eb4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:88340636882:android:792270e49c9c8f1275390b",
+        "mobilesdk_app_id": "1:679667436301:android:470b3ca90b57b3f597fe44",
         "android_client_info": {
-          "package_name": "com.example.c"
+          "package_name": "com.example.custom_roadm"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyClaEvQtiXgANmEUjuhcAfoZqYu0e_somw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:88340636882:android:7e34cc45d7766ebc75390b",
-        "android_client_info": {
-          "package_name": "com.example.custom_"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyClaEvQtiXgANmEUjuhcAfoZqYu0e_somw"
+          "current_key": "AIzaSyAWu2eJE_qVVJCI8FVuWheU867di1nrLUk"
         }
       ],
       "services": {
