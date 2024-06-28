@@ -64,7 +64,7 @@ ThemeData darkTheme = ThemeData(
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.blue,
     accentColor: Colors.blueAccent,
-    cardColor: Colors.grey[800],
+    cardColor: Colors.grey[850],
     backgroundColor: Colors.grey[900],
     brightness: Brightness.dark,
   ),

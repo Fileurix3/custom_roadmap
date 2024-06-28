@@ -68,12 +68,19 @@ class CustomRoadmapServices {
     ];
   }
 
-  Future<void> addNewRoadmap(String name) async {
+  Future<void> addNewRoadmap(
+      String name, String roadmapElement, String description) async {
     final db = await database;
 
     await db.insert(
       _tableName,
-      {"roadmapName": name},
+      {
+        "roadmapName": name,
+        "idRoadmapElement": 1,
+        "roadmapElement": roadmapElement,
+        "description": description,
+        "isCompleted": 0,
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
