@@ -1,9 +1,9 @@
 class CustomRoadmapModel {
   int id;
   String roadmapName;
-  int? idRoadmapElement;
-  String? roadmapElement;
-  String? description;
+  int idRoadmapElement;
+  String roadmapElement;
+  String description;
   int isCompleted;
 
   CustomRoadmapModel({

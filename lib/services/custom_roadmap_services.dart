@@ -52,9 +52,42 @@ class CustomRoadmapServices {
       for (final {
             "id": id as int,
             "roadmapName": roadmapName as String,
-            "idRoadmapElement": idRoadmapElement as int?,
-            "roadmapElement": roadmapElement as String?,
-            "description": description as String?,
+            "idRoadmapElement": idRoadmapElement as int,
+            "roadmapElement": roadmapElement as String,
+            "description": description as String,
+            "isCompleted": isCompleted as int,
+          } in maps)
+        CustomRoadmapModel(
+          id: id,
+          roadmapName: roadmapName,
+          idRoadmapElement: idRoadmapElement,
+          roadmapElement: roadmapElement,
+          description: description,
+          isCompleted: isCompleted,
+        )
+    ];
+  }
+
+  Future<List<CustomRoadmapModel>> getRoadmapByName(String name) async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $_tableName
+      WHERE roadmapName = ?
+      ORDER BY idRoadmapElement ASC
+      ''',
+      [name],
+    );
+
+    return [
+      for (final {
+            "id": id as int,
+            "roadmapName": roadmapName as String,
+            "idRoadmapElement": idRoadmapElement as int,
+            "roadmapElement": roadmapElement as String,
+            "description": description as String,
             "isCompleted": isCompleted as int,
           } in maps)
         CustomRoadmapModel(
@@ -82,6 +115,19 @@ class CustomRoadmapServices {
         "isCompleted": 0,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> updateIsCompleted(int id, int isCompleted) async {
+    final db = await database;
+
+    await db.update(
+      _tableName,
+      {
+        "isCompleted": isCompleted,
+      },
+      where: "id = ?",
+      whereArgs: [id],
     );
   }
 }

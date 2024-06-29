@@ -142,8 +142,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //print(MediaQuery.of(context).size.width);
-
     return Scaffold(
       body: FutureBuilder<List<CustomRoadmapModel>>(
         future: roadmapName,
@@ -205,7 +203,8 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: GestureDetector(
                       onTap: () {
-                        print("$index: ${snapshot.data![index].roadmapName}");
+                        Navigator.pushNamed(context, "/roadmapPage",
+                            arguments: snapshot.data![index].roadmapName);
                       },
                       child: AnimatedContainer(
                         transform: isHoverIndex == index

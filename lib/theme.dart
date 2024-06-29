@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 const TextTheme textTheme = TextTheme(
-  headlineLarge: TextStyle(
-    fontSize: 40,
-  ),
+  headlineLarge: TextStyle(fontSize: 40),
+  headlineSmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+  titleLarge: TextStyle(fontSize: 22),
+  titleMedium: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w400,
+      decoration: TextDecoration.lineThrough),
   titleSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
 );
 
@@ -48,6 +52,10 @@ InputDecorationTheme inputDecoration(Color? mainColor, Color errorColor) =>
     );
 
 ThemeData lightTheme = ThemeData(
+  appBarTheme: AppBarTheme(
+    color: Colors.grey[100],
+    centerTitle: true,
+  ),
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.blue,
     accentColor: Colors.blueAccent,
@@ -61,6 +69,10 @@ ThemeData lightTheme = ThemeData(
 );
 
 ThemeData darkTheme = ThemeData(
+  appBarTheme: AppBarTheme(
+    color: Colors.grey[900],
+    centerTitle: true,
+  ),
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.blue,
     accentColor: Colors.blueAccent,
