@@ -172,8 +172,15 @@ class CustomRoadmapServices {
     );
   }
 
-  Future<void> renameRoadmap(String name) async {
+  Future<void> updateNameRoadmap(String currentName, String newName) async {
     final db = await database;
+
+    db.update(
+      _tableName,
+      {"roadmapName": newName},
+      where: "roadmapName = ?",
+      whereArgs: [currentName],
+    );
   }
 
   Future<void> deleteElementsByRoadmapName(roadmapName) async {

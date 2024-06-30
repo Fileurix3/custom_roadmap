@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   Future<List<RoadmapSummary>>? roadmapName;
   final customRoadmapServices = CustomRoadmapServices();
 
-  TextEditingController nameRoadmapController = TextEditingController();
+  TextEditingController roadmapNameController = TextEditingController();
   TextEditingController roadamElementController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
@@ -37,6 +37,11 @@ class _HomePageState extends State<HomePage> {
     fetchRoadmaps();
   }
 
+  void newRoadmapName(String currentName, String newName) async {
+    await customRoadmapServices.updateNameRoadmap(currentName, newName);
+    fetchRoadmaps();
+  }
+
   void deleteRoadmap(String name) async {
     await customRoadmapServices.deleteElementsByRoadmapName(name);
     fetchRoadmaps();
@@ -49,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           title: const Text("Add new roadmap"),
           content: TextField(
-            controller: nameRoadmapController,
+            controller: roadmapNameController,
             decoration: const InputDecoration(labelText: "name"),
             style: Theme.of(context).textTheme.bodyMedium,
             maxLength: 25,
@@ -57,10 +62,10 @@ class _HomePageState extends State<HomePage> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                if (nameRoadmapController.text.isNotEmpty) {
+                if (roadmapNameController.text.isNotEmpty) {
                   Navigator.pop(context);
-                  addNewRoadmapElement(nameRoadmapController.text);
-                  nameRoadmapController.clear();
+                  addNewRoadmapElement(roadmapNameController.text);
+                  roadmapNameController.clear();
                 }
               },
               child: const Center(child: Text("Next")),
@@ -113,6 +118,35 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               child: const Center(child: Text("Add")),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void newRoadmapNameAlert(String currentName) {
+    showDialog(
+      context: context,
+      builder: (coontext) {
+        return AlertDialog(
+          title: const Text("New roadmap name"),
+          content: TextField(
+            controller: roadmapNameController,
+            decoration: const InputDecoration(labelText: "name"),
+            style: Theme.of(context).textTheme.bodyMedium,
+            maxLength: 25,
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                if (roadmapNameController.text.isNotEmpty) {
+                  Navigator.pop(context);
+                  newRoadmapName(currentName, roadmapNameController.text);
+                  roadmapNameController.clear();
+                }
+              },
+              child: const Center(child: Text("Next")),
             )
           ],
         );
@@ -188,7 +222,10 @@ class _HomePageState extends State<HomePage> {
                             borderRadius: BorderRadius.circular(14),
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
-                            onPressed: (context) {},
+                            onPressed: (context) {
+                              newRoadmapNameAlert(
+                                  snapshot.data![index].roadmapName);
+                            },
                             icon: Icons.edit,
                           ),
                         ],
@@ -200,7 +237,10 @@ class _HomePageState extends State<HomePage> {
                             borderRadius: BorderRadius.circular(14),
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
-                            onPressed: (context) {},
+                            onPressed: (context) {
+                              newRoadmapNameAlert(
+                                  snapshot.data![index].roadmapName);
+                            },
                             icon: Icons.edit,
                           ),
                           SlidableAction(
