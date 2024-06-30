@@ -1,5 +1,6 @@
 import 'package:custom_roadmap/model/custom_roadmap_model.dart';
 import 'package:custom_roadmap/services/custom_roadmap_services.dart';
+import 'package:custom_roadmap/widgets/roadmap_element_drawer.dart';
 import 'package:flutter/material.dart';
 
 class RoadmapPage extends StatefulWidget {
@@ -10,6 +11,8 @@ class RoadmapPage extends StatefulWidget {
 }
 
 class _RoadmapPageState extends State<RoadmapPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   Future<List<CustomRoadmapModel>>? roadmap;
   final customRoadmapServices = CustomRoadmapServices();
 
@@ -17,6 +20,8 @@ class _RoadmapPageState extends State<RoadmapPage> {
 
   TextEditingController roadmapElementNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  int? selectedItemId;
 
   @override
   void didChangeDependencies() {
@@ -62,6 +67,8 @@ class _RoadmapPageState extends State<RoadmapPage> {
                 decoration: const InputDecoration(labelText: "Description"),
                 style: Theme.of(context).textTheme.bodyMedium,
                 maxLength: 254,
+                minLines: 1,
+                maxLines: 5,
               ),
             ],
           ),
@@ -98,9 +105,17 @@ class _RoadmapPageState extends State<RoadmapPage> {
     });
   }
 
+  void openDrawerWithItemId(int itemId) {
+    setState(() {
+      selectedItemId = itemId;
+    });
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         actions: [Container()],
         title: Text(
@@ -109,9 +124,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
         ),
       ),
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: Drawer(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
+      endDrawer: RoadmapElementDrawer(itemId: selectedItemId),
       body: FutureBuilder<List<CustomRoadmapModel>>(
         future: roadmap,
         builder: (context, snapshot) {
@@ -194,7 +207,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
                             InkWell(
                               borderRadius: BorderRadius.circular(16),
                               onTap: () {
-                                Scaffold.of(context).openEndDrawer();
+                                openDrawerWithItemId(snapshot.data![index].id);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(

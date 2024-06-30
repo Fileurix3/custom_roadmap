@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:custom_roadmap/model/custom_roadmap_model.dart';
+import 'package:custom_roadmap/model/roadmap_summary.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -38,7 +39,7 @@ class CustomRoadmapServices {
     );
   }
 
-  Future<List<CustomRoadmapModel2>> getRoadmaps() async {
+  Future<List<RoadmapSummary>> getRoadmaps() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -57,7 +58,7 @@ class CustomRoadmapServices {
             "totalItems": totalItems as int,
             "completedItems": completedItems as int,
           } in maps)
-        CustomRoadmapModel2(
+        RoadmapSummary(
           roadmapName: roadmapName,
           totalItems: totalItems,
           completedItems: completedItems,
@@ -76,6 +77,38 @@ class CustomRoadmapServices {
       ORDER BY idRoadmapElement ASC
       ''',
       [name],
+    );
+
+    return [
+      for (final {
+            "id": id as int,
+            "roadmapName": roadmapName as String,
+            "idRoadmapElement": idRoadmapElement as int,
+            "roadmapElement": roadmapElement as String,
+            "description": description as String,
+            "isCompleted": isCompleted as int,
+          } in maps)
+        CustomRoadmapModel(
+          id: id,
+          roadmapName: roadmapName,
+          idRoadmapElement: idRoadmapElement,
+          roadmapElement: roadmapElement,
+          description: description,
+          isCompleted: isCompleted,
+        )
+    ];
+  }
+
+  Future<List<CustomRoadmapModel>> getRoadmapElementById(int id) async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $_tableName
+      WHERE id = ?
+      ''',
+      [id],
     );
 
     return [
@@ -136,6 +169,20 @@ class CustomRoadmapServices {
       },
       where: "id = ?",
       whereArgs: [id],
+    );
+  }
+
+  Future<void> renameRoadmap(String name) async {
+    final db = await database;
+  }
+
+  Future<void> deleteElementsByRoadmapName(roadmapName) async {
+    final db = await database;
+
+    await db.delete(
+      _tableName,
+      where: "roadmapName = ?",
+      whereArgs: [roadmapName],
     );
   }
 }

@@ -8,6 +8,7 @@ const TextTheme textTheme = TextTheme(
     fontSize: 26,
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.lineThrough,
+    decorationThickness: 2.0,
   ),
   labelMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
   bodyMedium: TextStyle(fontSize: 18),
