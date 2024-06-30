@@ -15,6 +15,9 @@ class _RoadmapPageState extends State<RoadmapPage> {
 
   late String roadmapName;
 
+  TextEditingController roadmapElementNameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -28,19 +31,86 @@ class _RoadmapPageState extends State<RoadmapPage> {
     });
   }
 
+  void _addNewRoadmapElement(
+      String roadmapElementName, String description) async {
+    await customRoadmapServices.addNewRoadmap(
+      roadmapName,
+      roadmapElementName,
+      description,
+    );
+    fetchRoadmap();
+  }
+
+  void addRoadmapElement() {
+    showDialog(
+      context: context,
+      builder: (coontext) {
+        return AlertDialog(
+          title: const Text("New roadmap element"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: roadmapElementNameController,
+                decoration:
+                    const InputDecoration(labelText: "Roadmap element name"),
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLength: 25,
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: const InputDecoration(labelText: "Description"),
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLength: 254,
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                if (roadmapElementNameController.text.isNotEmpty &&
+                    descriptionController.text.isNotEmpty) {
+                  _addNewRoadmapElement(roadmapElementNameController.text,
+                      descriptionController.text);
+                  Navigator.pop(context);
+                  roadmapElementNameController.clear();
+                  descriptionController.clear();
+                }
+              },
+              child: const Center(child: Text("Add")),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   void _updateIsCompleted(int id, int isCompleted) async {
     await customRoadmapServices.updateIsCompleted(id, isCompleted);
-    fetchRoadmap();
+    setState(() {
+      final index = roadmap
+          ?.then((value) => value.indexWhere((element) => element.id == id));
+      index?.then((idx) {
+        if (idx != -1) {
+          roadmap?.then((value) => value[idx].isCompleted = isCompleted);
+        }
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [Container()],
         title: Text(
           roadmapName,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
+      ),
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: Drawer(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: FutureBuilder<List<CustomRoadmapModel>>(
         future: roadmap,
@@ -54,30 +124,97 @@ class _RoadmapPageState extends State<RoadmapPage> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Checkbox(
-                      value:
-                          snapshot.data![index].isCompleted == 0 ? false : true,
-                      onChanged: (value) {
-                        if (value == true) {
-                          _updateIsCompleted(snapshot.data![index].id, 1);
-                        } else {
-                          _updateIsCompleted(snapshot.data![index].id, 0);
-                        }
-                      },
+                    Container(
+                      width: 50,
+                      margin: const EdgeInsets.only(
+                        right: 20,
+                      ),
+                      child: Text(
+                        snapshot.data![index].idRoadmapElement.toString(),
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.end,
+                      ),
                     ),
-                    Text(
-                      "${snapshot.data![index].idRoadmapElement}: ${snapshot.data![index].roadmapElement}",
-                      style: snapshot.data![index].isCompleted == 1
-                          ? Theme.of(context).textTheme.titleMedium
-                          : Theme.of(context).textTheme.titleLarge,
+                    Column(
+                      children: [
+                        if (index == 0)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 35),
+                          ),
+                        if (index != 0)
+                          Container(
+                            height: 35,
+                            width: 3,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        Container(
+                          height: MediaQuery.of(context).size.width / 6,
+                          width: MediaQuery.of(context).size.width / 6,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Checkbox(
+                            value: snapshot.data![index].isCompleted == 0
+                                ? false
+                                : true,
+                            onChanged: (value) {
+                              if (value == true) {
+                                _updateIsCompleted(snapshot.data![index].id, 1);
+                              } else {
+                                _updateIsCompleted(snapshot.data![index].id, 0);
+                              }
+                            },
+                          ),
+                        ),
+                        if (index == snapshot.data!.length - 1)
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 35),
+                          ),
+                        if (index != snapshot.data!.length - 1)
+                          Container(
+                            height: 35,
+                            width: 3,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit),
-                    )
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                          left: 8,
+                          right: 4,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () {
+                                Scaffold.of(context).openEndDrawer();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 8,
+                                ),
+                                child: Text(
+                                  snapshot.data![index].roadmapElement,
+                                  style: snapshot.data![index].isCompleted == 0
+                                      ? Theme.of(context).textTheme.titleMedium
+                                      : Theme.of(context).textTheme.titleSmall,
+                                  overflow: TextOverflow.visible,
+                                  softWrap: true,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 );
               },
@@ -86,7 +223,9 @@ class _RoadmapPageState extends State<RoadmapPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          addRoadmapElement();
+        },
         child: const Icon(Icons.add),
       ),
     );

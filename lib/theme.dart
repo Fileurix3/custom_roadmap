@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 
 const TextTheme textTheme = TextTheme(
-  headlineLarge: TextStyle(fontSize: 40),
   headlineSmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
-  titleLarge: TextStyle(fontSize: 22),
-  titleMedium: TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.w400,
-      decoration: TextDecoration.lineThrough),
-  titleSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+  titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+  titleMedium: TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
+  titleSmall: TextStyle(
+    fontSize: 26,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.lineThrough,
+  ),
+  labelMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+  bodyMedium: TextStyle(fontSize: 18),
 );
 
-ButtonStyle elevationButtonStyle = ButtonStyle(
-  textStyle: WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 20)),
-  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-  backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-  overlayColor:
-      WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-    if (states.contains(WidgetState.hovered)) {
-      return Colors.blueAccent.withOpacity(0.7);
-    }
-    return null;
-  }),
-  padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-  ),
-  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-  ),
-);
+ButtonStyle elevationButtonStyle(Color mainColor, Color textColor) =>
+    ButtonStyle(
+      textStyle: WidgetStateProperty.all<TextStyle>(
+        const TextStyle(fontSize: 20),
+      ),
+      foregroundColor: WidgetStateProperty.all<Color>(textColor),
+      backgroundColor: WidgetStateProperty.all<Color>(mainColor),
+      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      ),
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+    );
 
-InputDecorationTheme inputDecoration(Color? mainColor, Color errorColor) =>
-    InputDecorationTheme(
+InputDecorationTheme inputDecoration(Color? mainColor) => InputDecorationTheme(
       prefixIconColor: mainColor,
       suffixIconColor: mainColor,
       labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -43,28 +42,24 @@ InputDecorationTheme inputDecoration(Color? mainColor, Color errorColor) =>
           color: mainColor,
         ),
       ),
-      focusedErrorBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: errorColor),
-      ),
-      errorBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: errorColor),
-      ),
     );
 
 ThemeData lightTheme = ThemeData(
-  appBarTheme: AppBarTheme(
-    color: Colors.grey[100],
+  appBarTheme: const AppBarTheme(
+    color: Color.fromRGBO(235, 231, 227, 1),
     centerTitle: true,
   ),
   colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: Colors.blue,
-    accentColor: Colors.blueAccent,
-    cardColor: Colors.grey[300],
-    backgroundColor: Colors.grey[100],
+    primarySwatch: Colors.orange,
+    accentColor: Colors.orangeAccent,
+    cardColor: const Color.fromRGBO(215, 215, 215, 0.9),
+    backgroundColor: const Color.fromRGBO(235, 231, 227, 1),
     brightness: Brightness.light,
   ),
-  inputDecorationTheme: inputDecoration(Colors.black, Colors.red),
-  elevatedButtonTheme: ElevatedButtonThemeData(style: elevationButtonStyle),
+  inputDecorationTheme: inputDecoration(Colors.black),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: elevationButtonStyle(Colors.orange, Colors.black),
+  ),
   textTheme: textTheme,
 );
 
@@ -74,13 +69,15 @@ ThemeData darkTheme = ThemeData(
     centerTitle: true,
   ),
   colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: Colors.blue,
-    accentColor: Colors.blueAccent,
+    primarySwatch: Colors.indigo,
+    accentColor: Colors.indigoAccent,
     cardColor: Colors.grey[850],
     backgroundColor: Colors.grey[900],
     brightness: Brightness.dark,
   ),
-  inputDecorationTheme: inputDecoration(Colors.grey[350], Colors.red),
-  elevatedButtonTheme: ElevatedButtonThemeData(style: elevationButtonStyle),
+  inputDecorationTheme: inputDecoration(Colors.grey[350]),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: elevationButtonStyle(Colors.indigo, Colors.white),
+  ),
   textTheme: textTheme,
 );

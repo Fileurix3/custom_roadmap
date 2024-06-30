@@ -10,24 +10,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<CustomRoadmapModel>>? roadmapName;
+  Future<List<CustomRoadmapModel2>>? roadmapName;
   final customRoadmapServices = CustomRoadmapServices();
 
   TextEditingController nameRoadmapController = TextEditingController();
   TextEditingController roadamElementController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  int? isHoverIndex;
-
   @override
   void initState() {
     super.initState();
-    fetchRoadmapName();
+    fetchRoadmaps();
   }
 
-  Future<void> fetchRoadmapName() async {
+  Future<void> fetchRoadmaps() async {
     setState(() {
-      roadmapName = customRoadmapServices.getRoadmapsName();
+      roadmapName = customRoadmapServices.getRoadmaps();
     });
   }
 
@@ -35,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       String nameRoadmap, String roadmapElement, String description) async {
     await customRoadmapServices.addNewRoadmap(
         nameRoadmap, roadmapElement, description);
-    fetchRoadmapName();
+    fetchRoadmaps();
   }
 
   void addNewRoadmapAlert() {
@@ -47,8 +45,8 @@ class _HomePageState extends State<HomePage> {
           content: TextField(
             controller: nameRoadmapController,
             decoration: const InputDecoration(labelText: "name"),
-            style: Theme.of(context).textTheme.labelLarge,
-            maxLength: 20,
+            style: Theme.of(context).textTheme.bodyMedium,
+            maxLength: 25,
           ),
           actions: [
             ElevatedButton(
@@ -80,16 +78,14 @@ class _HomePageState extends State<HomePage> {
                 controller: roadamElementController,
                 decoration:
                     const InputDecoration(labelText: "Roadmap element name"),
-                style: Theme.of(context).textTheme.labelLarge,
-                maxLength: 50,
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLength: 25,
               ),
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(labelText: "Description"),
-                style: Theme.of(context).textTheme.labelLarge,
+                style: Theme.of(context).textTheme.bodyMedium,
                 maxLength: 254,
-                minLines: 1,
-                maxLines: 10,
               ),
             ],
           ),
@@ -116,34 +112,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  int getCrossAxisCount(double width) {
-    if (width >= 1920) {
-      return 9;
-    } else if (width >= 1500) {
-      return 8;
-    } else if (width >= 1250) {
-      return 7;
-    } else if (width >= 1050) {
-      return 6;
-    } else if (width >= 800) {
-      return 5;
-    } else if (width >= 600) {
-      return 4;
-    } else if (width >= 400) {
-      return 3;
-    } else if (width >= 200) {
-      return 2;
-    } else if (width >= 100) {
-      return 1;
-    } else {
-      return 3;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<CustomRoadmapModel>>(
+      appBar: AppBar(
+        title: Text(
+          "Custom roadmap",
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+      ),
+      body: FutureBuilder<List<CustomRoadmapModel2>>(
         future: roadmapName,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -170,61 +148,49 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                     "Add new roadmap",
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.labelMedium,
                   )
                 ],
               ),
             );
           } else {
             return Scaffold(
-              body: GridView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 20,
-                ),
+              body: ListView.builder(
                 itemCount: snapshot.data!.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount:
-                      getCrossAxisCount(MediaQuery.of(context).size.width),
-                  mainAxisSpacing: 14,
-                  crossAxisSpacing: 14,
-                ),
                 itemBuilder: (context, index) {
-                  return MouseRegion(
-                    onEnter: (_) {
-                      setState(() {
-                        isHoverIndex = index;
-                      });
-                    },
-                    onExit: (_) {
-                      setState(() {
-                        isHoverIndex = null;
-                      });
-                    },
-                    child: GestureDetector(
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width / 15,
+                      vertical: 10,
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
                       onTap: () {
                         Navigator.pushNamed(context, "/roadmapPage",
                             arguments: snapshot.data![index].roadmapName);
                       },
-                      child: AnimatedContainer(
-                        transform: isHoverIndex == index
-                            ? Matrix4.translationValues(0, 0, 0)
-                            : Matrix4.translationValues(0, 5, 0),
-                        duration: const Duration(milliseconds: 200),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: isHoverIndex == index
-                              ? Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.7)
-                              : Theme.of(context).cardColor,
+                          color: Theme.of(context).cardColor,
+                          border: Theme.of(context).colorScheme.brightness ==
+                                  Brightness.light
+                              ? Border.all(color: Colors.grey)
+                              : Border.all(color: Colors.grey.shade700),
                         ),
                         child: Center(
-                          child: Text(
-                            snapshot.data![index].roadmapName,
-                            style: Theme.of(context).textTheme.titleSmall,
-                            textAlign: TextAlign.center,
+                          child: Column(
+                            children: [
+                              Text(
+                                snapshot.data![index].roadmapName,
+                                style: Theme.of(context).textTheme.labelMedium,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                "completed: ${((snapshot.data![index].completedItems / snapshot.data![index].totalItems) * 100).toStringAsFixed(1)}%",
+                              )
+                            ],
                           ),
                         ),
                       ),

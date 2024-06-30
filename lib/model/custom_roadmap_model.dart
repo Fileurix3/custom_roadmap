@@ -15,3 +15,15 @@ class CustomRoadmapModel {
     required this.isCompleted,
   });
 }
+
+class CustomRoadmapModel2 {
+  final String roadmapName;
+  final int totalItems;
+  final int completedItems;
+
+  CustomRoadmapModel2({
+    required this.roadmapName,
+    required this.totalItems,
+    required this.completedItems,
+  });
+}

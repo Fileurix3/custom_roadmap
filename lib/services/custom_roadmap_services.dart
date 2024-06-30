@@ -38,11 +38,14 @@ class CustomRoadmapServices {
     );
   }
 
-  Future<List<CustomRoadmapModel>> getRoadmapsName() async {
+  Future<List<CustomRoadmapModel2>> getRoadmaps() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
-    SELECT *
+    SELECT 
+      roadmapName,
+      COUNT(*) as totalItems,
+      SUM(CASE WHEN isCompleted = 1 THEN 1 ELSE 0 END) as completedItems
     FROM $_tableName
     GROUP BY roadmapName
     ORDER BY id ASC
@@ -50,20 +53,14 @@ class CustomRoadmapServices {
 
     return [
       for (final {
-            "id": id as int,
             "roadmapName": roadmapName as String,
-            "idRoadmapElement": idRoadmapElement as int,
-            "roadmapElement": roadmapElement as String,
-            "description": description as String,
-            "isCompleted": isCompleted as int,
+            "totalItems": totalItems as int,
+            "completedItems": completedItems as int,
           } in maps)
-        CustomRoadmapModel(
-          id: id,
+        CustomRoadmapModel2(
           roadmapName: roadmapName,
-          idRoadmapElement: idRoadmapElement,
-          roadmapElement: roadmapElement,
-          description: description,
-          isCompleted: isCompleted,
+          totalItems: totalItems,
+          completedItems: completedItems,
         )
     ];
   }
@@ -105,11 +102,22 @@ class CustomRoadmapServices {
       String name, String roadmapElement, String description) async {
     final db = await database;
 
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      '''
+    SELECT MAX(idRoadmapElement) as idRoadmapElement
+    FROM $_tableName
+    WHERE roadmapName = ?
+    ''',
+      [name],
+    );
+
+    int idRoadmapElement = (result.first['idRoadmapElement'] ?? 0) + 1;
+
     await db.insert(
       _tableName,
       {
         "roadmapName": name,
-        "idRoadmapElement": 1,
+        "idRoadmapElement": idRoadmapElement,
         "roadmapElement": roadmapElement,
         "description": description,
         "isCompleted": 0,
