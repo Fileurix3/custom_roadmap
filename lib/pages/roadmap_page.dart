@@ -66,7 +66,6 @@ class _RoadmapPageState extends State<RoadmapPage> {
                 controller: descriptionController,
                 decoration: const InputDecoration(labelText: "Description"),
                 style: Theme.of(context).textTheme.bodyMedium,
-                maxLength: 254,
                 minLines: 1,
                 maxLines: 5,
               ),
@@ -117,6 +116,12 @@ class _RoadmapPageState extends State<RoadmapPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/homePage");
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         actions: [Container()],
         title: Text(
           roadmapName,

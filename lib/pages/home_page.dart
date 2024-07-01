@@ -1,7 +1,9 @@
 import 'package:custom_roadmap/model/roadmap_summary.dart';
+import 'package:custom_roadmap/provider/theme_provider.dart';
 import 'package:custom_roadmap/services/custom_roadmap_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (coontext) {
         return AlertDialog(
-          title: const Text("First element roadmap"),
+          title: const Text("First element"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -96,7 +98,6 @@ class _HomePageState extends State<HomePage> {
                 controller: descriptionController,
                 decoration: const InputDecoration(labelText: "Description"),
                 style: Theme.of(context).textTheme.bodyMedium,
-                maxLength: 254,
                 minLines: 1,
                 maxLines: 5,
               ),
@@ -158,10 +159,47 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           "Custom roadmap",
           style: Theme.of(context).textTheme.headlineSmall,
         ),
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return Padding(
+                padding: const EdgeInsets.all(2),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(100),
+                  onTap: () {
+                    themeProvider.toggleTheme();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 100),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        );
+                      },
+                      child: themeProvider.darkTheme == false
+                          ? const Icon(
+                              Icons.nights_stay,
+                              key: ValueKey<int>(1),
+                            )
+                          : const Icon(
+                              Icons.light_mode,
+                              key: ValueKey<int>(2),
+                            ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<RoadmapSummary>>(
         future: roadmapName,

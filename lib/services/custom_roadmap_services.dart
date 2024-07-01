@@ -183,6 +183,31 @@ class CustomRoadmapServices {
     );
   }
 
+  Future<void> updateRoadmapElement(
+      int id, String newName, String description) async {
+    final db = await database;
+
+    db.update(
+      _tableName,
+      {
+        "roadmapElement": newName,
+        "description": description,
+      },
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteRoadmapElement(int id) async {
+    final db = await database;
+
+    await db.delete(
+      _tableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
   Future<void> deleteElementsByRoadmapName(roadmapName) async {
     final db = await database;
 

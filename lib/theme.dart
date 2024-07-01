@@ -10,6 +10,7 @@ const TextTheme textTheme = TextTheme(
     decoration: TextDecoration.lineThrough,
     decorationThickness: 2.0,
   ),
+  labelLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
   labelMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
   bodyMedium: TextStyle(fontSize: 18),
 );
@@ -34,7 +35,7 @@ ButtonStyle elevationButtonStyle(Color mainColor, Color textColor) =>
 InputDecorationTheme inputDecoration(Color? mainColor) => InputDecorationTheme(
       prefixIconColor: mainColor,
       suffixIconColor: mainColor,
-      labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: mainColor!),
       ),
