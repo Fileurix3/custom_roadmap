@@ -1,16 +1,38 @@
-# custom_roadmap
+# Custom Roadmap App
 
-A new Flutter project.
+## About
 
-## Getting Started
+**Custom Roadmap** is an application designed to create personalized roadmaps, allowing users to track their progress in various learning or training endeavors.
 
-This project is a starting point for a Flutter application.
+## Application Functionality
 
-A few resources to get you started if this is your first Flutter project:
+The app consists of two main pages:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### All Roadmaps Page
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Displays a list of all your created roadmaps.
+- Each roadmap entry shows the percentage of completion.
+
+### Individual Roadmap Page
+
+- Displays details of a specific roadmap when clicked from the list on the first page.
+- Each element within the roadmap is clickable.
+- Clicking on an element opens a window displaying its name and description.
+- Provides functionality to edit the element within the same window.
+
+## Extensions Used
+
+- **SQLite** ([sqflite](https://pub.dev/packages/sqflite)):
+
+  - Used for local data storage, allowing the app to persist roadmaps and their elements locally on the device.
+
+- **Shared Preferences** ([shared_preferences](https://pub.dev/packages/shared_preferences)):
+
+  - Utilized to store user preferences, such as chosen themes, across app sessions.
+
+- **Provider** ([provider](https://pub.dev/packages/provider)):
+
+  - Implemented for state management and theme switching within the app.
+
+- **flutter_slidable** ([flutter_slidable](https://pub.dev/packages/flutter_slidable)):
+  - Integrated to enable sliding gestures on list elements, providing intuitive actions like delete or edit.
