@@ -1,19 +1,19 @@
+import 'package:custom_roadmap/bloc/theme/theme_state.dart';
 import 'package:custom_roadmap/pages/home_page.dart';
 import 'package:custom_roadmap/pages/roadmap_page.dart';
-import 'package:custom_roadmap/provider/theme_provider.dart';
 import 'package:custom_roadmap/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
+        BlocProvider<ThemeCubit>(
+          create: (_) => ThemeCubit(),
         ),
       ],
       child: MyApp(
@@ -30,14 +30,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: Provider.of<ThemeProvider>(context).darkTheme == false
-          ? lightTheme
-          : darkTheme,
-      home: const HomePage(),
-      routes: {
-        "/homePage": (context) => const HomePage(),
-        "/roadmapPage": (context) => const RoadmapPage(),
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        return MaterialApp(
+          theme: state.darkTheme == false ? lightTheme : darkTheme,
+          home: const HomePage(),
+          routes: {
+            "/homePage": (context) => const HomePage(),
+            "/roadmapPage": (context) => const RoadmapPage(),
+          },
+        );
       },
     );
   }

@@ -36,7 +36,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
     });
   }
 
-  void _addNewRoadmapElement(
+  void addNewRoadmapElement(
       String roadmapElementName, String description) async {
     await customRoadmapServices.addNewRoadmap(
       roadmapName,
@@ -46,7 +46,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
     fetchRoadmap();
   }
 
-  void addRoadmapElement() {
+  void addRoadmapElementAlert() {
     showDialog(
       context: context,
       builder: (coontext) {
@@ -76,8 +76,10 @@ class _RoadmapPageState extends State<RoadmapPage> {
               onPressed: () {
                 if (roadmapElementNameController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty) {
-                  _addNewRoadmapElement(roadmapElementNameController.text,
-                      descriptionController.text);
+                  addNewRoadmapElement(
+                    roadmapElementNameController.text,
+                    descriptionController.text,
+                  );
                   Navigator.pop(context);
                   roadmapElementNameController.clear();
                   descriptionController.clear();
@@ -104,7 +106,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
     });
   }
 
-  void openDrawerWithItemId(int itemId) {
+  void openDrawer(int itemId) {
     setState(() {
       selectedItemId = itemId;
     });
@@ -212,7 +214,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
                             InkWell(
                               borderRadius: BorderRadius.circular(16),
                               onTap: () {
-                                openDrawerWithItemId(snapshot.data![index].id);
+                                openDrawer(snapshot.data![index].id);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -242,7 +244,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addRoadmapElement();
+          addRoadmapElementAlert();
         },
         child: const Icon(Icons.add),
       ),

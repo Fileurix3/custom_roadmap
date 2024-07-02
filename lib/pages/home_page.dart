@@ -1,9 +1,9 @@
+import 'package:custom_roadmap/bloc/theme/theme_state.dart';
 import 'package:custom_roadmap/model/roadmap_summary.dart';
-import 'package:custom_roadmap/provider/theme_provider.dart';
 import 'package:custom_roadmap/services/custom_roadmap_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 if (roadmapNameController.text.isNotEmpty) {
                   Navigator.pop(context);
-                  addNewRoadmapElement(roadmapNameController.text);
+                  addFirstElementAlert(roadmapNameController.text);
                   roadmapNameController.clear();
                 }
               },
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void addNewRoadmapElement(String nameRoadmap) {
+  void addFirstElementAlert(String nameRoadmap) {
     showDialog(
       context: context,
       builder: (coontext) {
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void newRoadmapNameAlert(String currentName) {
+  void updateRoadmapNameAlert(String currentName) {
     showDialog(
       context: context,
       builder: (coontext) {
@@ -165,14 +165,14 @@ class _HomePageState extends State<HomePage> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         actions: [
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
+          BlocBuilder<ThemeCubit, ThemeState>(
+            builder: (context, state) {
               return Padding(
                 padding: const EdgeInsets.all(2),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(100),
                   onTap: () {
-                    themeProvider.toggleTheme();
+                    context.read<ThemeCubit>().toggleTheme();
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(6),
@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                           child: child,
                         );
                       },
-                      child: themeProvider.darkTheme == false
+                      child: state.darkTheme == false
                           ? const Icon(
                               Icons.nights_stay,
                               key: ValueKey<int>(1),
@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             onPressed: (context) {
-                              newRoadmapNameAlert(
+                              updateRoadmapNameAlert(
                                   snapshot.data![index].roadmapName);
                             },
                             icon: Icons.edit,
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             onPressed: (context) {
-                              newRoadmapNameAlert(
+                              updateRoadmapNameAlert(
                                   snapshot.data![index].roadmapName);
                             },
                             icon: Icons.edit,

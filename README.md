@@ -30,7 +30,7 @@ The app consists of two main pages:
 
   - Utilized to store user preferences, such as chosen themes, across app sessions.
 
-- **Provider** ([provider](https://pub.dev/packages/provider)):
+- **bloc** ([bloc](https://pub.dev/packages/flutter_bloc)):
 
   - Implemented for state management and theme switching within the app.
 
