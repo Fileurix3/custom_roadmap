@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 const TextTheme textTheme = TextTheme(
+  //appBar text
   headlineSmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+
   titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
   titleMedium: TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
   titleSmall: TextStyle(
@@ -12,6 +14,8 @@ const TextTheme textTheme = TextTheme(
   ),
   labelLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
   labelMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+
+  //input text
   bodyMedium: TextStyle(fontSize: 18),
 );
 

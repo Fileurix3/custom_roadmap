@@ -1,7 +1,7 @@
-import 'package:custom_roadmap/model/custom_roadmap_model.dart';
-import 'package:custom_roadmap/services/custom_roadmap_services.dart';
-import 'package:custom_roadmap/widgets/roadmap_element_drawer.dart';
+import 'package:custom_roadmap/bloc/roadmap/roadmap_state.dart';
+import 'package:custom_roadmap/widgets/my_timeline_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoadmapPage extends StatefulWidget {
   const RoadmapPage({super.key});
@@ -12,9 +12,6 @@ class RoadmapPage extends StatefulWidget {
 
 class _RoadmapPageState extends State<RoadmapPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  Future<List<CustomRoadmapModel>>? roadmap;
-  final customRoadmapServices = CustomRoadmapServices();
 
   late String roadmapName;
 
@@ -27,23 +24,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     roadmapName = ModalRoute.of(context)!.settings.arguments as String;
-    fetchRoadmap();
-  }
-
-  Future<void> fetchRoadmap() async {
-    setState(() {
-      roadmap = customRoadmapServices.getRoadmapByName(roadmapName);
-    });
-  }
-
-  void addNewRoadmapElement(
-      String roadmapElementName, String description) async {
-    await customRoadmapServices.addNewRoadmap(
-      roadmapName,
-      roadmapElementName,
-      description,
-    );
-    fetchRoadmap();
+    context.read<RoadmapCubit>().fetchRoadmap(roadmapName);
   }
 
   void addRoadmapElementAlert() {
@@ -60,7 +41,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
                 decoration:
                     const InputDecoration(labelText: "Roadmap element name"),
                 style: Theme.of(context).textTheme.bodyMedium,
-                maxLength: 25,
+                maxLength: 50,
               ),
               TextField(
                 controller: descriptionController,
@@ -76,10 +57,11 @@ class _RoadmapPageState extends State<RoadmapPage> {
               onPressed: () {
                 if (roadmapElementNameController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty) {
-                  addNewRoadmapElement(
-                    roadmapElementNameController.text,
-                    descriptionController.text,
-                  );
+                  context.read<RoadmapCubit>().addNewRoadmapAndRoadmapElement(
+                        roadmapElementNameController.text,
+                        descriptionController.text,
+                        roadmapName,
+                      );
                   Navigator.pop(context);
                   roadmapElementNameController.clear();
                   descriptionController.clear();
@@ -91,19 +73,6 @@ class _RoadmapPageState extends State<RoadmapPage> {
         );
       },
     );
-  }
-
-  void _updateIsCompleted(int id, int isCompleted) async {
-    await customRoadmapServices.updateIsCompleted(id, isCompleted);
-    setState(() {
-      final index = roadmap
-          ?.then((value) => value.indexWhere((element) => element.id == id));
-      index?.then((idx) {
-        if (idx != -1) {
-          roadmap?.then((value) => value[idx].isCompleted = isCompleted);
-        }
-      });
-    });
   }
 
   void openDrawer(int itemId) {
@@ -118,128 +87,44 @@ class _RoadmapPageState extends State<RoadmapPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, "/homePage");
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
         actions: [Container()],
         title: Text(
           roadmapName,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
-      endDrawerEnableOpenDragGesture: false,
-      endDrawer: RoadmapElementDrawer(itemId: selectedItemId),
-      body: FutureBuilder<List<CustomRoadmapModel>>(
-        future: roadmap,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<RoadmapCubit, RoadmapState>(
+        builder: (context, state) {
+          if (state is RoadmapLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text(snapshot.hasError.toString()));
-          } else {
+          } else if (state is RoadmapError) {
+            return Center(child: Text(state.message));
+          } else if (state is RoadmapLoaded) {
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: state.roadmap.length,
               itemBuilder: (context, index) {
-                return Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 50,
-                      margin: const EdgeInsets.only(
-                        right: 20,
-                      ),
-                      child: Text(
-                        snapshot.data![index].idRoadmapElement.toString(),
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        if (index == 0)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 35),
-                          ),
-                        if (index != 0)
-                          Container(
-                            height: 35,
-                            width: 3,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        Container(
-                          height: MediaQuery.of(context).size.width / 6,
-                          width: MediaQuery.of(context).size.width / 6,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Checkbox(
-                            value: snapshot.data![index].isCompleted == 0
-                                ? false
-                                : true,
-                            onChanged: (value) {
-                              if (value == true) {
-                                _updateIsCompleted(snapshot.data![index].id, 1);
-                              } else {
-                                _updateIsCompleted(snapshot.data![index].id, 0);
-                              }
-                            },
-                          ),
-                        ),
-                        if (index == snapshot.data!.length - 1)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 35),
-                          ),
-                        if (index != snapshot.data!.length - 1)
-                          Container(
-                            height: 35,
-                            width: 3,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          left: 8,
-                          right: 4,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                openDrawer(snapshot.data![index].id);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 8,
-                                ),
-                                child: Text(
-                                  snapshot.data![index].roadmapElement,
-                                  style: snapshot.data![index].isCompleted == 0
-                                      ? Theme.of(context).textTheme.titleMedium
-                                      : Theme.of(context).textTheme.titleSmall,
-                                  overflow: TextOverflow.visible,
-                                  softWrap: true,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 100,
+                  ),
+                  child: Column(
+                    children: [
+                      MyTimelineTile(
+                        id: state.roadmap[index].id,
+                        title: state.roadmap[index].roadmapElement,
+                        isCompleted: state.roadmap[index].isCompleted,
+                        roadmapElementId: state.roadmap[index].idRoadmapElement,
+                        isFirst: index == 0 ? true : false,
+                        isLast:
+                            index == state.roadmap.length - 1 ? true : false,
+                      )
+                    ],
+                  ),
                 );
               },
             );
           }
+          return const Text("error");
         },
       ),
       floatingActionButton: FloatingActionButton(

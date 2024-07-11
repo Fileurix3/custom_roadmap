@@ -63,7 +63,7 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
                         labelText: "name",
                       ),
                       style: Theme.of(context).textTheme.bodyMedium,
-                      maxLength: 24,
+                      maxLength: 50,
                     ),
                     TextField(
                       controller: descriptionController,

@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final customRoadmapServices = CustomRoadmapServices();
 
   TextEditingController roadmapNameController = TextEditingController();
-  TextEditingController roadamElementController = TextEditingController();
+  TextEditingController roadmapElementController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   @override
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
             controller: roadmapNameController,
             decoration: const InputDecoration(labelText: "name"),
             style: Theme.of(context).textTheme.bodyMedium,
-            maxLength: 25,
+            maxLength: 50,
           ),
           actions: [
             ElevatedButton(
@@ -88,11 +88,11 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: roadamElementController,
+                controller: roadmapElementController,
                 decoration:
                     const InputDecoration(labelText: "Roadmap element name"),
                 style: Theme.of(context).textTheme.bodyMedium,
-                maxLength: 25,
+                maxLength: 50,
               ),
               TextField(
                 controller: descriptionController,
@@ -106,15 +106,15 @@ class _HomePageState extends State<HomePage> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                if (roadamElementController.text.isNotEmpty &&
+                if (roadmapElementController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty) {
                   addNewRoadmap(
                     nameRoadmap,
-                    roadamElementController.text,
+                    roadmapElementController.text,
                     descriptionController.text,
                   );
                   Navigator.pop(context);
-                  roadamElementController.clear();
+                  roadmapElementController.clear();
                   descriptionController.clear();
                 }
               },
@@ -295,8 +295,11 @@ class _HomePageState extends State<HomePage> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(14),
                         onTap: () {
-                          Navigator.pushNamed(context, "/roadmapPage",
-                              arguments: snapshot.data![index].roadmapName);
+                          Navigator.pushNamed(
+                            context,
+                            "/roadmapPage",
+                            arguments: snapshot.data![index].roadmapName,
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 12),

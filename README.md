@@ -32,7 +32,12 @@ The app consists of two main pages:
 
 - **bloc** ([bloc](https://pub.dev/packages/flutter_bloc)):
 
-  - Implemented for state management and theme switching within the app.
+  - Implemented for state management
 
 - **flutter_slidable** ([flutter_slidable](https://pub.dev/packages/flutter_slidable)):
+
   - Integrated to enable sliding gestures on list elements, providing intuitive actions like delete or edit.
+    o
+
+- **timeline_tile** ([timeline_tile](https://pub.dev/packages/timeline_tile)):
+  - for implement the roadmap interface
