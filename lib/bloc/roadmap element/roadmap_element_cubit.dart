@@ -15,4 +15,28 @@ class RoadmapElementCubit extends Cubit<RoadmapElementState> {
       emit(RoadmapElementError(e.toString()));
     }
   }
+
+  void updateRoadmapElement(String name, String description, int id) async {
+    emit(RoadmapElementLoading());
+    try {
+      await customRoadmapServices.updateRoadmapElement(
+        id,
+        name,
+        description,
+      );
+      fetchRoadmapElement(id);
+    } catch (e) {
+      emit(RoadmapElementError(e.toString()));
+    }
+  }
+
+  void deleteRoadmapElement(int id) async {
+    emit(RoadmapElementLoading());
+    try {
+      await customRoadmapServices.deleteRoadmapElement(id);
+      fetchRoadmapElement(id);
+    } catch (e) {
+      emit(RoadmapElementError(e.toString()));
+    }
+  }
 }

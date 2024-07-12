@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:custom_roadmap/model/custom_roadmap_model.dart';
-import 'package:custom_roadmap/model/roadmap_summary.dart';
+import 'package:custom_roadmap/model/summary_roadmap_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -39,7 +39,7 @@ class CustomRoadmapServices {
     );
   }
 
-  Future<List<RoadmapSummary>> getRoadmaps() async {
+  Future<List<SummaryRoadmapModel>> getRoadmaps() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -58,7 +58,7 @@ class CustomRoadmapServices {
             "totalItems": totalItems as int,
             "completedItems": completedItems as int,
           } in maps)
-        RoadmapSummary(
+        SummaryRoadmapModel(
           roadmapName: roadmapName,
           totalItems: totalItems,
           completedItems: completedItems,
@@ -208,7 +208,7 @@ class CustomRoadmapServices {
     );
   }
 
-  Future<void> deleteElementsByRoadmapName(roadmapName) async {
+  Future<void> deleteRoadmapsByName(roadmapName) async {
     final db = await database;
 
     await db.delete(

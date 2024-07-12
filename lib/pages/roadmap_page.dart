@@ -1,5 +1,5 @@
 import 'package:custom_roadmap/bloc/roadmap/roadmap_state.dart';
-import 'package:custom_roadmap/widgets/my_timeline_tile.dart';
+import 'package:custom_roadmap/widgets/my_roadmap_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,8 +11,6 @@ class RoadmapPage extends StatefulWidget {
 }
 
 class _RoadmapPageState extends State<RoadmapPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   late String roadmapName;
 
   TextEditingController roadmapElementNameController = TextEditingController();
@@ -75,19 +73,10 @@ class _RoadmapPageState extends State<RoadmapPage> {
     );
   }
 
-  void openDrawer(int itemId) {
-    setState(() {
-      selectedItemId = itemId;
-    });
-    _scaffoldKey.currentState!.openEndDrawer();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
-        actions: [Container()],
         title: Text(
           roadmapName,
           style: Theme.of(context).textTheme.headlineSmall,
@@ -98,7 +87,12 @@ class _RoadmapPageState extends State<RoadmapPage> {
           if (state is RoadmapLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is RoadmapError) {
-            return Center(child: Text(state.message));
+            return Center(
+              child: Text(
+                state.message,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            );
           } else if (state is RoadmapLoaded) {
             return ListView.builder(
               itemCount: state.roadmap.length,
@@ -109,7 +103,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
                   ),
                   child: Column(
                     children: [
-                      MyTimelineTile(
+                      MyRoadmapWidget(
                         id: state.roadmap[index].id,
                         title: state.roadmap[index].roadmapElement,
                         isCompleted: state.roadmap[index].isCompleted,

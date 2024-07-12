@@ -1,17 +1,17 @@
+import 'package:custom_roadmap/bloc/roadmap%20element/roadmap_element_state.dart';
 import 'package:custom_roadmap/model/custom_roadmap_model.dart';
 import 'package:custom_roadmap/services/custom_roadmap_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditRoadmapElement extends StatefulWidget {
   final int id;
-  final int idRoadmapElement;
   final String roadmapElement;
   final String description;
 
   const EditRoadmapElement({
     super.key,
     required this.id,
-    required this.idRoadmapElement,
     required this.roadmapElement,
     required this.description,
   });
@@ -34,16 +34,12 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
     descriptionController.text = widget.description;
   }
 
-  void updateRoadmapElement(String name, String description) async {
+  void updateRoadmapElement(String name, String description, int id) async {
     await customRoadmapServices.updateRoadmapElement(
-      widget.id,
+      id,
       name,
       description,
     );
-  }
-
-  void deleteRoadmapElement() async {
-    await customRoadmapServices.deleteRoadmapElement(widget.id);
   }
 
   @override
@@ -60,9 +56,10 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
                     TextField(
                       controller: roadmapElementNameController,
                       decoration: const InputDecoration(
-                        labelText: "name",
+                        hintText: "name",
                       ),
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
                       maxLength: 50,
                     ),
                     TextField(
@@ -70,7 +67,7 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
                       decoration: const InputDecoration(
                         labelText: "description",
                       ),
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.labelMedium,
                       maxLines: null,
                     )
                   ],
@@ -87,7 +84,9 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
                 flex: 1,
                 child: ElevatedButton(
                   onPressed: () {
-                    deleteRoadmapElement();
+                    context
+                        .read<RoadmapElementCubit>()
+                        .deleteRoadmapElement(widget.id);
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
@@ -106,10 +105,11 @@ class _EditRoadmapElementState extends State<EditRoadmapElement> {
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
-                    updateRoadmapElement(
-                      roadmapElementNameController.text,
-                      descriptionController.text,
-                    );
+                    context.read<RoadmapElementCubit>().updateRoadmapElement(
+                          roadmapElementNameController.text,
+                          descriptionController.text,
+                          widget.id,
+                        );
                     Navigator.pop(context);
                   },
                   child: const Text("Save"),

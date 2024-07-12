@@ -1,9 +1,9 @@
-class RoadmapSummary {
+class SummaryRoadmapModel {
   final String roadmapName;
   final int totalItems;
   final int completedItems;
 
-  RoadmapSummary({
+  SummaryRoadmapModel({
     required this.roadmapName,
     required this.totalItems,
     required this.completedItems,

@@ -1,5 +1,6 @@
 import 'package:custom_roadmap/bloc/roadmap%20element/roadmap_element_state.dart';
 import 'package:custom_roadmap/bloc/roadmap/roadmap_state.dart';
+import 'package:custom_roadmap/bloc/summary%20roadmap/summary_roadmap_state.dart';
 import 'package:custom_roadmap/bloc/theme/theme_state.dart';
 import 'package:custom_roadmap/pages/about_roadmap_element_page.dart';
 import 'package:custom_roadmap/pages/home_page.dart';
@@ -18,6 +19,7 @@ void main() async {
         BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
         BlocProvider<RoadmapCubit>(create: (_) => RoadmapCubit()),
         BlocProvider<RoadmapElementCubit>(create: (_) => RoadmapElementCubit()),
+        BlocProvider<SummaryRoadmapCubit>(create: (_) => SummaryRoadmapCubit()),
       ],
       child: MyApp(
         sharedPreferences: prefs,

@@ -12,22 +12,21 @@ class ViewingRoadmapElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: [
-            Text(
-              roadmapElement,
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              description,
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            roadmapElement,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            description,
+            style: Theme.of(context).textTheme.labelMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

@@ -50,33 +50,46 @@ class _AboutRoadmapElementPageState extends State<AboutRoadmapElementPage> {
         if (state is RoadmapElementLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is RoadmapElementError) {
-          return Center(child: Text(state.message));
-        } else if (state is RoadmapElementLoaded) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isEdit == false)
-                  ViewingRoadmapElement(
-                    roadmapElement: state.roadmapElement[0].roadmapElement,
-                    description: state.roadmapElement[0].description,
-                  )
-                else if (isEdit == true)
-                  Expanded(
-                    child: EditRoadmapElement(
-                      id: state.roadmapElement[0].id,
-                      idRoadmapElement:
-                          state.roadmapElement[0].idRoadmapElement,
-                      roadmapElement: state.roadmapElement[0].roadmapElement,
-                      description: state.roadmapElement[0].description,
-                    ),
-                  )
-              ],
+          return Center(
+            child: Text(
+              state.message,
+              style: Theme.of(context).textTheme.labelMedium,
             ),
           );
+        } else if (state is RoadmapElementLoaded) {
+          if (state.roadmapElement.isNotEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(20),
+              child: isEdit == false
+                  ? SingleChildScrollView(
+                      child: ViewingRoadmapElement(
+                        roadmapElement: state.roadmapElement[0].roadmapElement,
+                        description: state.roadmapElement[0].description,
+                      ),
+                    )
+                  : Expanded(
+                      child: EditRoadmapElement(
+                        id: state.roadmapElement[0].id,
+                        roadmapElement: state.roadmapElement[0].roadmapElement,
+                        description: state.roadmapElement[0].description,
+                      ),
+                    ),
+            );
+          } else {
+            return Center(
+              child: Text(
+                "No roadmap element found",
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            );
+          }
         }
-        return const Text("error");
+        return Center(
+          child: Text(
+            "error",
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+        );
       }),
     );
   }

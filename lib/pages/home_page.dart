@@ -1,6 +1,5 @@
+import 'package:custom_roadmap/bloc/summary%20roadmap/summary_roadmap_state.dart';
 import 'package:custom_roadmap/bloc/theme/theme_state.dart';
-import 'package:custom_roadmap/model/roadmap_summary.dart';
-import 'package:custom_roadmap/services/custom_roadmap_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -13,9 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<RoadmapSummary>>? roadmapName;
-  final customRoadmapServices = CustomRoadmapServices();
-
   TextEditingController roadmapNameController = TextEditingController();
   TextEditingController roadmapElementController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -23,30 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    fetchRoadmaps();
-  }
-
-  Future<void> fetchRoadmaps() async {
-    setState(() {
-      roadmapName = customRoadmapServices.getRoadmaps();
-    });
-  }
-
-  void addNewRoadmap(
-      String nameRoadmap, String roadmapElement, String description) async {
-    await customRoadmapServices.addNewRoadmap(
-        nameRoadmap, roadmapElement, description);
-    fetchRoadmaps();
-  }
-
-  void newRoadmapName(String currentName, String newName) async {
-    await customRoadmapServices.updateNameRoadmap(currentName, newName);
-    fetchRoadmaps();
-  }
-
-  void deleteRoadmap(String name) async {
-    await customRoadmapServices.deleteElementsByRoadmapName(name);
-    fetchRoadmaps();
+    context.read<SummaryRoadmapCubit>().fetchRoadmaps();
   }
 
   void addNewRoadmapAlert() {
@@ -108,11 +81,11 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 if (roadmapElementController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty) {
-                  addNewRoadmap(
-                    nameRoadmap,
-                    roadmapElementController.text,
-                    descriptionController.text,
-                  );
+                  context.read<SummaryRoadmapCubit>().addNewRoadmap(
+                        nameRoadmap,
+                        roadmapElementController.text,
+                        descriptionController.text,
+                      );
                   Navigator.pop(context);
                   roadmapElementController.clear();
                   descriptionController.clear();
@@ -143,7 +116,8 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 if (roadmapNameController.text.isNotEmpty) {
                   Navigator.pop(context);
-                  newRoadmapName(currentName, roadmapNameController.text);
+                  context.read<SummaryRoadmapCubit>().updateNameRoadmap(
+                      currentName, roadmapNameController.text);
                   roadmapNameController.clear();
                 }
               },
@@ -201,145 +175,166 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<RoadmapSummary>>(
-        future: roadmapName,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<SummaryRoadmapCubit, SummaryRoadmapState>(
+        builder: (context, state) {
+          if (state is SummaryRoadmapLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+          } else if (state is SummaryRoadmapError) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    hoverColor: Colors.white.withOpacity(0),
-                    highlightColor: Colors.grey.withOpacity(0.2),
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      addNewRoadmapAlert();
-                    },
-                    icon: Icon(
-                      Icons.add,
-                      size: 110,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white.withOpacity(0.75)
-                          : Colors.black.withOpacity(0.4),
-                    ),
-                  ),
-                  Text(
-                    "Add new roadmap",
-                    style: Theme.of(context).textTheme.labelMedium,
-                  )
-                ],
+              child: Text(
+                state.message,
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             );
-          } else {
-            return Scaffold(
-              body: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 15,
-                      vertical: 10,
+          } else if (state is SummaryRoadmapLoaded) {
+            if (state.roadmap.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.white.withOpacity(0),
+                      highlightColor: Colors.grey.withOpacity(0.2),
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        addNewRoadmapAlert();
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        size: 110,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.75)
+                            : Colors.black.withOpacity(0.4),
+                      ),
                     ),
-                    child: Slidable(
-                      startActionPane: ActionPane(
-                        motion: const StretchMotion(),
-                        children: [
-                          SlidableAction(
-                            borderRadius: BorderRadius.circular(14),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.error,
-                            onPressed: (context) {
-                              deleteRoadmap(snapshot.data![index].roadmapName);
-                            },
-                            icon: Icons.delete,
-                          ),
-                          SlidableAction(
-                            borderRadius: BorderRadius.circular(14),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            onPressed: (context) {
-                              updateRoadmapNameAlert(
-                                  snapshot.data![index].roadmapName);
-                            },
-                            icon: Icons.edit,
-                          ),
-                        ],
+                    Text(
+                      "Add new roadmap",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    )
+                  ],
+                ),
+              );
+            } else if (state.roadmap.isNotEmpty) {
+              return Scaffold(
+                body: ListView.builder(
+                  itemCount: state.roadmap.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 15,
+                        vertical: 10,
                       ),
-                      endActionPane: ActionPane(
-                        motion: const StretchMotion(),
-                        children: [
-                          SlidableAction(
-                            borderRadius: BorderRadius.circular(14),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            onPressed: (context) {
-                              updateRoadmapNameAlert(
-                                  snapshot.data![index].roadmapName);
-                            },
-                            icon: Icons.edit,
-                          ),
-                          SlidableAction(
-                            borderRadius: BorderRadius.circular(14),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.error,
-                            onPressed: (context) {
-                              deleteRoadmap(snapshot.data![index].roadmapName);
-                            },
-                            icon: Icons.delete,
-                          ),
-                        ],
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(14),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            "/roadmapPage",
-                            arguments: snapshot.data![index].roadmapName,
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: Theme.of(context).cardColor,
-                            border: Theme.of(context).colorScheme.brightness ==
-                                    Brightness.light
-                                ? Border.all(color: Colors.grey)
-                                : Border.all(color: Colors.grey.shade700),
-                          ),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Text(
-                                  snapshot.data![index].roadmapName,
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  "completed: ${((snapshot.data![index].completedItems / snapshot.data![index].totalItems) * 100).toStringAsFixed(1)}%",
-                                )
-                              ],
+                      child: Slidable(
+                        startActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(14),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              onPressed: (context) {
+                                context
+                                    .read<SummaryRoadmapCubit>()
+                                    .deleteRoadmap(
+                                        state.roadmap[index].roadmapName);
+                              },
+                              icon: Icons.delete,
+                            ),
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(14),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              onPressed: (context) {
+                                updateRoadmapNameAlert(
+                                    state.roadmap[index].roadmapName);
+                              },
+                              icon: Icons.edit,
+                            ),
+                          ],
+                        ),
+                        endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(14),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              onPressed: (context) {
+                                updateRoadmapNameAlert(
+                                    state.roadmap[index].roadmapName);
+                              },
+                              icon: Icons.edit,
+                            ),
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(14),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              onPressed: (context) {
+                                context
+                                    .read<SummaryRoadmapCubit>()
+                                    .deleteRoadmap(
+                                        state.roadmap[index].roadmapName);
+                              },
+                              icon: Icons.delete,
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(14),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              "/roadmapPage",
+                              arguments: state.roadmap[index].roadmapName,
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: Theme.of(context).cardColor,
+                              border:
+                                  Theme.of(context).colorScheme.brightness ==
+                                          Brightness.light
+                                      ? Border.all(color: Colors.grey)
+                                      : Border.all(color: Colors.grey.shade700),
+                            ),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    state.roadmap[index].roadmapName,
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    "completed: ${((state.roadmap[index].completedItems / state.roadmap[index].totalItems) * 100).toStringAsFixed(1)}%",
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  addNewRoadmapAlert();
-                },
-                child: const Icon(Icons.add),
-              ),
-            );
+                    );
+                  },
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    addNewRoadmapAlert();
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              );
+            }
           }
+          return Center(
+            child: Text(
+              "error",
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          );
         },
       ),
     );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class MyTimelineTile extends StatelessWidget {
+class MyRoadmapWidget extends StatelessWidget {
   final int id;
   final String title;
   final int isCompleted;
@@ -11,7 +11,7 @@ class MyTimelineTile extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
 
-  const MyTimelineTile({
+  const MyRoadmapWidget({
     super.key,
     required this.id,
     required this.title,
