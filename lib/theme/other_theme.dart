@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
 
 const TextTheme textTheme = TextTheme(
-  //appBar text
-  headlineSmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
-
   titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
-  titleMedium: TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
-  titleSmall: TextStyle(
-    fontSize: 26,
-    fontWeight: FontWeight.w500,
-    decoration: TextDecoration.lineThrough,
-    decorationThickness: 2.0,
-  ),
   labelLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
   labelMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
 
@@ -27,7 +17,7 @@ ButtonStyle elevationButtonStyle(Color mainColor, Color textColor) =>
       foregroundColor: WidgetStateProperty.all<Color>(textColor),
       backgroundColor: WidgetStateProperty.all<Color>(mainColor),
       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
         RoundedRectangleBorder(
@@ -65,25 +55,6 @@ ThemeData lightTheme = ThemeData(
   inputDecorationTheme: inputDecoration(Colors.black),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: elevationButtonStyle(Colors.orange, Colors.black),
-  ),
-  textTheme: textTheme,
-);
-
-ThemeData darkTheme = ThemeData(
-  appBarTheme: AppBarTheme(
-    color: Colors.grey[900],
-    centerTitle: true,
-  ),
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: Colors.indigo,
-    accentColor: Colors.indigoAccent,
-    cardColor: Colors.grey[850],
-    backgroundColor: Colors.grey[900],
-    brightness: Brightness.dark,
-  ),
-  inputDecorationTheme: inputDecoration(Colors.grey[350]),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: elevationButtonStyle(Colors.indigo, Colors.white),
   ),
   textTheme: textTheme,
 );

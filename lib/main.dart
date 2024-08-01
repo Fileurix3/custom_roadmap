@@ -3,12 +3,15 @@ import 'package:custom_roadmap/bloc/roadmap/roadmap_state.dart';
 import 'package:custom_roadmap/bloc/summary%20roadmap/summary_roadmap_state.dart';
 import 'package:custom_roadmap/bloc/theme/theme_state.dart';
 import 'package:custom_roadmap/pages/about_roadmap_element_page.dart';
+import 'package:custom_roadmap/pages/add_new_roadmap_page.dart';
 import 'package:custom_roadmap/pages/home_page.dart';
 import 'package:custom_roadmap/pages/roadmap_page.dart';
-import 'package:custom_roadmap/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'theme/dark_theme.dart';
+import 'theme/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +48,7 @@ class MyApp extends StatelessWidget {
             "/roadmapPage": (context) => const RoadmapPage(),
             "/aboutRoadmapElementPage": (context) =>
                 const AboutRoadmapElementPage(),
+            "/addNewRoadmapPage": (context) => const AddNewRoadmapPage(),
           },
         );
       },

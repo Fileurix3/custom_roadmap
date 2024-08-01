@@ -13,90 +13,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController roadmapNameController = TextEditingController();
-  TextEditingController roadmapElementController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     context.read<SummaryRoadmapCubit>().fetchRoadmaps();
-  }
-
-  void addNewRoadmapAlert() {
-    showDialog(
-      context: context,
-      builder: (coontext) {
-        return AlertDialog(
-          title: const Text("Add new roadmap"),
-          content: TextField(
-            controller: roadmapNameController,
-            decoration: const InputDecoration(labelText: "name"),
-            style: Theme.of(context).textTheme.bodyMedium,
-            maxLength: 50,
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                if (roadmapNameController.text.isNotEmpty) {
-                  Navigator.pop(context);
-                  addFirstElementAlert(roadmapNameController.text);
-                  roadmapNameController.clear();
-                }
-              },
-              child: const Center(child: Text("Next")),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void addFirstElementAlert(String nameRoadmap) {
-    showDialog(
-      context: context,
-      builder: (coontext) {
-        return AlertDialog(
-          title: const Text("First element"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: roadmapElementController,
-                decoration:
-                    const InputDecoration(labelText: "Roadmap element name"),
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLength: 50,
-              ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: "Description"),
-                style: Theme.of(context).textTheme.bodyMedium,
-                minLines: 1,
-                maxLines: 5,
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                if (roadmapElementController.text.isNotEmpty &&
-                    descriptionController.text.isNotEmpty) {
-                  context.read<SummaryRoadmapCubit>().addNewRoadmap(
-                        nameRoadmap,
-                        roadmapElementController.text,
-                        descriptionController.text,
-                      );
-                  Navigator.pop(context);
-                  roadmapElementController.clear();
-                  descriptionController.clear();
-                }
-              },
-              child: const Center(child: Text("Add")),
-            )
-          ],
-        );
-      },
-    );
   }
 
   void updateRoadmapNameAlert(String currentName) {
@@ -134,9 +55,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          "Custom roadmap",
-          style: Theme.of(context).textTheme.headlineSmall,
+        title: const Text(
+          "Custom roadmaps list",
         ),
         actions: [
           BlocBuilder<ThemeCubit, ThemeState>(
@@ -197,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                       highlightColor: Colors.grey.withOpacity(0.2),
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        addNewRoadmapAlert();
+                        Navigator.pushNamed(context, "/addNewRoadmapPage");
                       },
                       icon: Icon(
                         Icons.add,
@@ -322,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
-                    addNewRoadmapAlert();
+                    Navigator.pushNamed(context, "/addNewRoadmapPage");
                   },
                   child: const Icon(Icons.add),
                 ),

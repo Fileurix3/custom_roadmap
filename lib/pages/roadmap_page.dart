@@ -79,7 +79,6 @@ class _RoadmapPageState extends State<RoadmapPage> {
       appBar: AppBar(
         title: Text(
           roadmapName,
-          style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
       body: BlocBuilder<RoadmapCubit, RoadmapState>(
